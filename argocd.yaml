@@ -1,0 +1,93 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: agnos
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  description: Agnos GitOps Project
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agnos-api
+  namespace: argocd
+spec:
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  project: agnos
+  source:
+    helm:
+      releaseName: agnos-api
+      valueFiles:
+      - values-dev.yaml
+    path: helm/api
+    repoURL: https://github.com/sudo-yama/agnos-gitops-infra.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: agnos-worker
+  namespace: argocd
+spec:
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  project: agnos
+  source:
+    helm:
+      releaseName: agnos-worker
+      valueFiles:
+      - values-dev.yaml
+    path: helm/worker
+    repoURL: https://github.com/sudo-yama/agnos-gitops-infra.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring
+  namespace: argocd
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: agnos
+  sources:
+  - chart: kube-prometheus-stack
+    helm:
+      releaseName: monitoring
+      valueFiles:
+      - $values/helm/monitoring/values-dev.yaml
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 58.2.1
+  - ref: values
+    repoURL: https://github.com/sudo-yama/agnos-gitops-infra.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
