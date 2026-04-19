@@ -1,6 +1,6 @@
 image:
-  repository: agnos-worker
-  tag: latest
+  repository: weerapatx/agnos-worker-service
+  tag: 20260419-1111-1ce5ee9
   pullPolicy: IfNotPresent
 
 service:

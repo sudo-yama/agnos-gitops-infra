@@ -1,6 +1,6 @@
 image:
-  repository: agnos-api
-  tag: latest
+  repository: weerapatx/agnos-api-service
+  tag: 20260417-1652-b975ecb
   pullPolicy: IfNotPresent
 
 service:
