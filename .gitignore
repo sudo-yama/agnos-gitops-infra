@@ -1,0 +1,18 @@
+# generated files
+argocd.yaml
+
+# kustomize output
+*.yaml.tmp
+*.out.yaml
+
+# logs / build
+logs/
+*.log
+
+# python
+__pycache__/
+*.pyc
+
+# mac / windows junk
+.DS_Store
+Thumbs.db
